@@ -5,7 +5,11 @@ description = "COSCUP 2025 大地遊戲後端服務"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "asyncpg>=0.30.0",
     "fastapi[standard]>=0.115.12",
+    "greenlet>=3.2.3",
     "python-dotenv>=1.1.0",
+    "python-jose>=3.5.0",
+    "sqlalchemy>=2.0.41",
     "uvicorn>=0.34.3",
 ]
