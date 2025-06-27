@@ -52,4 +52,4 @@ async def register(user_in: UserCreate, response: Response, db: AsyncSession = D
 # 驗證 HTTP Only Cookie 方式，是否有將 token 存在手機中
 @router.get("/protected")
 async def protected_route(current_user: str = Depends(get_current_user)):
-    return {"message": f"Hello user {current_user}, you are authenticated"}
+    return {"message": f"Hello user {current_user.name}, you are authenticated"}

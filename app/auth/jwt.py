@@ -1,7 +1,13 @@
 from jose import jwt, JWTError
 from datetime import datetime, timedelta
-from fastapi import Cookie, HTTPException, status
+from fastapi import Cookie, HTTPException, status, Depends
 from typing import Optional
+
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select
+
+from app.models import User
+from app.database import get_db
 
 # JWT 設定
 SECRET_KEY = "your-secret-key"
@@ -20,8 +26,9 @@ def create_access_token(
     return encoded_jwt
 
 async def get_current_user(
-    access_token: Optional[str] = Cookie(default=None)
-) -> str:
+    access_token: Optional[str] = Cookie(default=None),
+    db: AsyncSession = Depends(get_db)
+) -> User:
     """從 HTTP Only Cookie 驗證 JWT 並回傳 user_id"""
     if not access_token:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token is missing")
@@ -34,4 +41,10 @@ async def get_current_user(
     except JWTError:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token is invalid or expired")
 
-    return user_id
+    result = await db.execute(select(User).where(User.id == user_id))
+    user = result.scalar_one_or_none()
+
+    if user is None:
+        raise HTTPException(status_code=401, detail="User not found")
+
+    return user
