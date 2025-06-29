@@ -17,6 +17,10 @@ class RoleEnum(PyEnum):
     STAFF = "STAFF"
     ADMIN = "ADMIN"
 
+class VisitTypeEnum(PyEnum):
+    BOOTH = "BOOTH"   # 使用者被攤位掃（被動）
+    OTHER = "OTHER"   # 使用者主動掃（主動）
+
 class User(Base):
     __tablename__ = "users"
 
@@ -35,3 +39,13 @@ class Booth(Base):
     description = Column(String(255), nullable=True)
     points = Column(Integer, nullable=False)
     created_at = Column(DateTime, server_default=func.now(), nullable=False)
+
+class Visit(Base):
+    __tablename__ = "visits"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    user_id = Column(UUID(as_uuid=True), nullable=False)
+    type = Column(PgEnum(VisitTypeEnum, name="visit_enum"), nullable=False)
+    booth_id = Column(UUID(as_uuid=True), nullable=True)
+    message = Column(String, nullable=True)
+    visit_at = Column(DateTime, server_default=func.now(), nullable=False)

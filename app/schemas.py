@@ -14,6 +14,10 @@ class RoleEnum(str, Enum):
     STAFF = "STAFF"
     ADMIN = "ADMIN"
 
+class VisitTypeEnum(str, Enum):
+    BOOTH = "BOOTH"   # 使用者被攤位掃（被動）
+    OTHER = "OTHER"   # 使用者主動掃（主動）
+
 class UserRead(BaseModel):
     id: UUID
     name: str
@@ -45,3 +49,20 @@ class BoothCreate(BaseModel):
     name: str
     description: str
     points: int
+
+class VisitRead(BaseModel):
+    id: int
+    user_id: str
+    type: VisitTypeEnum
+    booth_id: str
+    message: Optional[str] = None
+    visit_at: datetime
+
+    class Config:
+        orm_mode = True
+
+# class VisitCreate(BaseModel):
+#     user_id: str
+#     type: VisitTypeEnum
+#     booth_id: str
+#     message: str

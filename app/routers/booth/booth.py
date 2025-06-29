@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 import uuid
 
-from app.models import Booth
+from app.models import User, Booth, Visit
 from app.schemas import BoothRead, BoothCreate
 from app.database import get_db
 
@@ -30,18 +30,31 @@ async def register(booth_in: BoothCreate, db: AsyncSession = Depends(get_db)):
 
     return new_booth
 
-@router.get("/", response_model=BoothRead)
+@router.get("/")
 async def booth(qrcode_token: str, db: AsyncSession = Depends(get_db)):
     q = select(Booth).where(Booth.id == qrcode_token)
     result = await db.execute(q)
     existing_booth = result.scalar_one_or_none()
+
     if not existing_booth:
         raise HTTPException(status_code=400, detail="The booth isn't registered.")
 
+    q = select(Visit).where(Visit.booth_id == qrcode_token)
+    result = await db.execute(q)
+    visit_count = len(result.scalars().all())
+
+    # TBD: show what kind of messages?
     return {
         "id": existing_booth.id, 
         "name": existing_booth.name, 
         "description": existing_booth.description,
         "points": existing_booth.points,
+        "visit_count": visit_count,
+        "message": "",
         "created_at": existing_booth.created_at
     }
+
+# TBD: how to get current booth_id?
+@router.post("/scan-user")
+async def booth(user_id: str, booth_id: str, db: AsyncSession = Depends(get_db)):
+    pass

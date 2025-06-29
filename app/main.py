@@ -4,6 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.routers.register import register
 from app.routers.whoami import whoami
 from app.routers.booth import booth
+from app.routers.user import user
 
 # Init DB
 from app.database import engine
@@ -45,4 +46,10 @@ app.include_router(
     booth.router,
     prefix="/api/booth",
     tags=["攤位"],
+)
+
+app.include_router(
+    user.router,
+    prefix="/api/user",
+    tags=["使用者"],
 )
