@@ -30,3 +30,18 @@ class UserCreate(BaseModel):
     email: Optional[EmailStr] = None
     gender: Optional[GenderEnum] = None
     role: Optional[RoleEnum] = RoleEnum.ATTENDEE
+
+class BoothRead(BaseModel):
+    id: UUID
+    name: str
+    description: str
+    points: int
+    created_at: datetime
+
+    class Config:
+        orm_mode = True
+
+class BoothCreate(BaseModel):
+    name: str
+    description: str
+    points: int
