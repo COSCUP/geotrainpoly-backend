@@ -1,7 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.routers.register import register
 from app.routers.whoami import whoami
 from app.routers.booth import booth
 from app.routers.user import user
@@ -29,12 +28,6 @@ app.add_middleware(
 @app.get("/")
 def root():
     return {"message": "Welcome to COSCUP 2025 GeoTrainPoly backend!"}
-
-app.include_router(
-    register.router,
-    prefix="/api/register",
-    tags=["會眾註冊"],
-)
 
 app.include_router(
     whoami.router,
