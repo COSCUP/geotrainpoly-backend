@@ -5,7 +5,7 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.sql import func
 from enum import Enum as PyEnum
 
-Base = declarative_base()
+from app.database import Base
 
 class GenderEnum(PyEnum):
     male = "male"
@@ -24,7 +24,7 @@ class VisitTypeEnum(PyEnum):
 class User(Base):
     __tablename__ = "users"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    id = Column(String(100), primary_key=True, index=True)  # save token from OPASS
     name = Column(String(100), nullable=False)
     email = Column(String(100), unique=True, nullable=True)
     gender = Column(PgEnum(GenderEnum, name="gender_enum"), nullable=True)

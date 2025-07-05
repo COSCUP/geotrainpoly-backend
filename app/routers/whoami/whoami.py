@@ -1,5 +1,4 @@
-from fastapi import APIRouter, Security
-from typing import Annotated
+from fastapi import APIRouter, Depends
 
 from app.models import User
 from app.auth.jwt import get_current_user
@@ -7,9 +6,7 @@ from app.auth.jwt import get_current_user
 router = APIRouter()
 
 @router.get("/")
-async def whoami(
-    current_user: Annotated[User, Security(get_current_user, scopes=[""])]
-):
+async def whoami(current_user=Depends(get_current_user)):
     # WIP: Calculate "points"
 
     return {

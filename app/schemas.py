@@ -19,7 +19,7 @@ class VisitTypeEnum(str, Enum):
     OTHER = "OTHER"   # 使用者主動掃（主動）
 
 class UserRead(BaseModel):
-    id: UUID
+    id: str
     name: str
     email: EmailStr
     gender: GenderEnum
