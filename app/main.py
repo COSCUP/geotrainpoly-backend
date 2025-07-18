@@ -1,5 +1,8 @@
 from fastapi import FastAPI
+from fastapi.routing import APIRouter
 from fastapi.middleware.cors import CORSMiddleware
+from app.router import booths_router
+
 
 app = FastAPI(title="COSCUP 2025 GeoTrainPoly")
 
@@ -10,7 +13,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+api = APIRouter(prefix="/api")
+api.include_router(booths_router)
 
-@app.get("/")
-def root():
-    return {"message": "Welcome to COSCUP 2025 GeoTrainPoly backend!"}
+app.include_router(api)
