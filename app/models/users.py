@@ -1,5 +1,7 @@
 from sqlalchemy import Column, Integer, Text, Enum, String
+from sqlalchemy.orm import relationship
 from app.database import engine, Base
+from app.models.achievements import Achievement
 
 
 class User(Base):
@@ -9,4 +11,5 @@ class User(Base):
     avatar = Column(Text)
     title = Column(Text)
     points = Column(Integer, default=0)
-    pass
+
+    achievements = relationship("Achievement", back_populates="owner")
