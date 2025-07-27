@@ -10,7 +10,7 @@ class User(Base):
     name = Column(Text)
     avatar = Column(Text)
     title = Column(Text)
-    points = Column(Integer, server_default='0')
+    points = Column(Integer, server_default="0")
 
     achievements = relationship("Achievement", back_populates="owner")
     booths = relationship("UserBooths", back_populates="owner")
