@@ -1,4 +1,5 @@
 from sqlalchemy import Column, Integer, Text, Enum, String
+from sqlalchemy.orm import relationship
 from app.database import engine, Base
 
 
@@ -9,4 +10,5 @@ class Booth(Base):
     description = Column(Text)
     logo = Column(Text)
     type = Column(Enum("BOOTHS", "ROOMS"))
-    pass
+
+    users = relationship("UserBooths", back_populates="booth")

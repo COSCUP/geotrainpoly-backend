@@ -13,3 +13,4 @@ class User(Base):
     points = Column(Integer, default=0)
 
     achievements = relationship("Achievement", back_populates="owner")
+    booths = relationship("UserBooths", back_populates="owner")
