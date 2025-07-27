@@ -29,6 +29,15 @@ async def collect_point(
     if not booth:
         raise HTTPException(status_code=404, detail="Booth not found")
 
+    user_booth = (
+        session.query(UserBooths)
+        .filter(UserBooths.user_id == user_id, UserBooths.booth_id == body.booth_id)
+        .first()
+    )
+
+    if user_booth:
+        raise HTTPException(status_code=400, detail="Point already collected")
+
     point_to_add = 0
     if booth.type == "BOOTHS":
         point_to_add = 50
