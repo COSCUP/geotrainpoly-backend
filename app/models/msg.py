@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Boolean, ForeignKey
+from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, TIMESTAMP, func
 from sqlalchemy.orm import relationship
 from app.database import Base
 
@@ -9,6 +9,7 @@ class Msg(Base):
     user_id = Column(String(40), ForeignKey("users.user_id"), primary_key=True)
     booth_id = Column(String(40), ForeignKey("booths.booth_id"), primary_key=True)
     content = Column(String(200))
+    created_at = Column(TIMESTAMP(timezone=True), server_default=func.now())
 
     owner = relationship("User", back_populates="msg")
     booth = relationship("Booth", back_populates="msg")
