@@ -1,5 +1,6 @@
 from fastapi import Depends
 from fastapi.routing import APIRouter
+from sqlalchemy.dialects.mysql import insert
 from sqlalchemy.orm import Session
 from app.database import get_session
 from app.models.booths import Booth
@@ -27,13 +28,14 @@ async def create_msg(
     session: Session = Depends(get_session),
     user: User = Depends(get_user),
 ):
-    msg = Msg(
+    stmt = insert(Msg).values(
         user_id=user.user_id,
         booth_id=body.booth_id,
         content=body.content,
     )
+    update_stmt = stmt.on_duplicate_key_update(content=stmt.inserted.content)
 
-    session.add(msg)
+    session.execute(update_stmt)
     session.commit()
 
-    return msg.__dict__
+    return {"message": "success"}

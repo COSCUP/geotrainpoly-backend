@@ -1,4 +1,13 @@
-from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, TIMESTAMP, func
+from sqlalchemy import (
+    Column,
+    Integer,
+    String,
+    Boolean,
+    ForeignKey,
+    TIMESTAMP,
+    func,
+    UniqueConstraint,
+)
 from sqlalchemy.orm import relationship
 from app.database import Base
 
@@ -11,5 +20,6 @@ class Msg(Base):
     content = Column(String(200))
     created_at = Column(TIMESTAMP(timezone=True), server_default=func.now())
 
+    __table_args__ = (UniqueConstraint("user_id", "booth_id", name="uix_user_booth"),)
     owner = relationship("User", back_populates="msg")
     booth = relationship("Booth", back_populates="msg")
