@@ -29,3 +29,7 @@ api.include_router(hextiles_router)
 api.include_router(msg_router)
 
 app.include_router(api)
+
+@app.on_event("startup")
+async def startup():
+    Base.metadata.create_all(bind=engine)
