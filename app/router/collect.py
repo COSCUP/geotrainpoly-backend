@@ -10,6 +10,7 @@ from pydantic import BaseModel
 
 class CollectRequest(BaseModel):
     booth_id: str
+    x: int
 
 
 router = APIRouter(
@@ -49,6 +50,7 @@ async def collect_point(
     user_booth = UserBooths(
         user_id=user_id,
         booth_id=body.booth_id,
+        x=body.x,
     )
 
     session.add(user_booth)
