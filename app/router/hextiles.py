@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session, joinedload
 from app.database import get_session
 from app.models.userBooths import UserBooths
 from app.models.users import User
+from app.models.msg import Msg
 from app.middleware.getUser import get_user
 
 
@@ -26,3 +27,40 @@ async def get_hextiles(
         .filter(UserBooths.user_id == user.user_id)
         .all()
     )
+
+
+@router.get("/{booth_id}")
+async def get_hextile(
+    request: Request,
+    booth_id: str,
+    session: Session = Depends(get_session),
+    user: User = Depends(get_user),
+):
+    booth = (
+        session.query(UserBooths)
+        .options(joinedload(UserBooths.booth))
+        .filter(UserBooths.user_id == user.user_id, UserBooths.booth_id == booth_id)
+        .first()
+    )
+
+    msg = (
+        session.query(Msg)
+        .options(joinedload(Msg.owner))
+        .filter(Msg.booth_id == booth_id)
+        .all()
+    )
+
+    if (not booth) or (not msg):
+        raise HTTPException(status_code=404, detail="Booth not found")
+
+    return {
+        "booth": booth.booth,
+        "msg": [
+            {
+                "user": {"name": x.owner.name, "title": x.owner.title},
+                "content": x.content,
+                "created_at": x.created_at,
+            }
+            for x in msg
+        ],
+    }
