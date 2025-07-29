@@ -6,6 +6,7 @@ from app.models.booths import Booth
 from app.models.users import User
 from app.models.userBooths import UserBooths
 from pydantic import BaseModel
+from app.middleware.getUser import get_user
 
 
 class CollectRequest(BaseModel):
@@ -16,14 +17,17 @@ class CollectRequest(BaseModel):
 router = APIRouter(
     prefix="/collect",
     tags=["collect"],
+    dependencies=[Depends(get_user)],
 )
 
 
 @router.post("")
 async def collect_point(
-    request: Request, body: CollectRequest, session: Session = Depends(get_session)
+    request: Request,
+    body: CollectRequest,
+    session: Session = Depends(get_session),
+    user: User = Depends(get_user),
 ):
-    user = session.merge(request.state.user)
     user_id = user.user_id
     booth = session.query(Booth).filter(Booth.booth_id == body.booth_id).first()
 
