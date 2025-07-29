@@ -9,6 +9,6 @@ class Achievement(Base):
     name = Column(Text)
     title = Column(Text)
     points = Column(Integer)
-    user_id = Column(String(36), ForeignKey("users.user_id"))
+    user_id = Column(String(40), ForeignKey("users.user_id"))
 
     owner = relationship("User", back_populates="achievements")

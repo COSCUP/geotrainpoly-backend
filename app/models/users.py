@@ -6,7 +6,7 @@ from app.models.achievements import Achievement
 
 class User(Base):
     __tablename__ = "users"
-    user_id = Column(String(36), primary_key=True)
+    user_id = Column(String(40), primary_key=True)
     name = Column(Text)
     avatar = Column(Text)
     title = Column(Text)
