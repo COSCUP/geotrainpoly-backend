@@ -5,6 +5,7 @@ description = "COSCUP 2025 大地遊戲後端服務"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "cryptography>=45.0.5",
     "fastapi[standard]>=0.115.12",
     "pydantic>=2.11.5",
     "pymysql>=1.1.1",
