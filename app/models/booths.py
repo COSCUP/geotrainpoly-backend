@@ -12,3 +12,4 @@ class Booth(Base):
     type = Column(Enum("BOOTHS", "ROOMS"))
 
     users = relationship("UserBooths", back_populates="booth")
+    msg = relationship("Msg", back_populates="booth")

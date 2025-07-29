@@ -14,3 +14,4 @@ class User(Base):
 
     achievements = relationship("Achievement", back_populates="owner")
     booths = relationship("UserBooths", back_populates="owner")
+    msg = relationship("Msg", back_populates="owner")

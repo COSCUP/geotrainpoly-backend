@@ -7,6 +7,7 @@ from app.router import (
     collect_router,
     send_router,
     hextiles_router,
+    msg_router,
 )
 from app.database import Base, engine
 
@@ -25,5 +26,6 @@ api.include_router(profiles_router)
 api.include_router(collect_router)
 api.include_router(send_router)
 api.include_router(hextiles_router)
+api.include_router(msg_router)
 
 app.include_router(api)
