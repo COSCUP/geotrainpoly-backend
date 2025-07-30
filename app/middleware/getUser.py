@@ -2,6 +2,7 @@ from fastapi import Depends, Request, HTTPException
 from sqlalchemy.orm import Session
 from app.database import get_session
 from app.models.users import User
+from httpx import get
 
 
 def get_user(request: Request, session: Session = Depends(get_session)) -> User:
@@ -18,8 +19,18 @@ def get_user(request: Request, session: Session = Depends(get_session)) -> User:
     user = session.query(User).filter(User.user_id == token).first()
 
     if not user:
-        raise HTTPException(status_code=403, detail="Token Invalid")
+        response = get(f"https://ccip.opass.app/status?token={token}")
 
-    # TODO: check opass
+        if response.status_code != 200:
+            raise HTTPException(status_code=403, detail="Token Invalid")
+
+        response = response.json()
+
+        user = User(user_id=token, name=response["user_id"], points=0)
+
+        session.add(user)
+        session.commit()
+
+        return user
 
     return user

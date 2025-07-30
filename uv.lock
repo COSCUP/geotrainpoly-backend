@@ -32,6 +32,7 @@ source = { virtual = "." }
 dependencies = [
     { name = "cryptography" },
     { name = "fastapi", extra = ["standard"] },
+    { name = "httpx" },
     { name = "pydantic" },
     { name = "pymysql" },
     { name = "python-dotenv" },
@@ -48,6 +49,7 @@ lint = [
 requires-dist = [
     { name = "cryptography", specifier = ">=45.0.5" },
     { name = "fastapi", extras = ["standard"], specifier = ">=0.115.12" },
+    { name = "httpx", specifier = ">=0.28.1" },
     { name = "pydantic", specifier = ">=2.11.5" },
     { name = "pymysql", specifier = ">=1.1.1" },
     { name = "python-dotenv", specifier = ">=1.1.0" },
