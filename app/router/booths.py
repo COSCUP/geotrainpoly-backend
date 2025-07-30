@@ -14,4 +14,12 @@ router = APIRouter(
 @router.get("")
 async def get_booths(session: Session = Depends(get_session)):
     booths = session.query(Booth).all()
-    return booths
+    return [
+        {
+            "name": booth.name,
+            "type": booth.type,
+            "logo": booth.logo,
+            "description": booth.description,
+        }
+        for booth in booths
+    ]
