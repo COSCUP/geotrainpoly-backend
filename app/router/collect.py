@@ -7,11 +7,12 @@ from app.models.users import User
 from app.models.userBooths import UserBooths
 from pydantic import BaseModel
 from app.middleware.getUser import get_user
+from typing import Literal
 
 
 class CollectRequest(BaseModel):
     booth_id: str
-    x: int
+    x: Literal[-1, 0, 1]
 
 
 router = APIRouter(
