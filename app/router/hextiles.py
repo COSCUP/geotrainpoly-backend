@@ -59,7 +59,7 @@ async def get_hextile(
         .all()
     )
 
-    if (not booth) or (not msg):
+    if not booth:
         raise HTTPException(status_code=404, detail="Booth not found")
 
     return {
