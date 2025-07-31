@@ -22,12 +22,21 @@ async def get_hextiles(
     user: User = Depends(get_user),
 ):
     return (
-        session.query(UserBooths)
+        {
+            "id": i.id,
+            "x": i.x,
+            "user_id": i.user_id,
+            "booth_id": i.booth_id if i.booth.type == "ROOMS" else None,
+            "name": i.booth.name,
+            "logo": i.booth.logo,
+            "description": i.booth.description,
+            "type": i.booth.type
+        }
+        for i in session.query(UserBooths)
         .options(joinedload(UserBooths.booth))
         .filter(UserBooths.user_id == user.user_id)
         .all()
     )
-
 
 @router.get("/{booth_id}")
 async def get_hextile(
