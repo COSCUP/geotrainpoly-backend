@@ -69,6 +69,7 @@ async def get_hextile(
         "booth": booth.booth,
         "msg": [
             {
+                "msg_id": x.id,
                 "user": {"name": x.owner.name, "title": x.owner.title},
                 "content": x.content,
                 "created_at": x.created_at,
