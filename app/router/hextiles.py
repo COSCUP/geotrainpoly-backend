@@ -3,6 +3,7 @@ from fastapi.routing import APIRouter
 from sqlalchemy.orm import Session, joinedload
 from app.database import get_session
 from app.models.userBooths import UserBooths
+from app.models.booths import Booth
 from app.models.users import User
 from app.models.msg import Msg
 from app.middleware.getUser import get_user
@@ -38,29 +39,31 @@ async def get_hextiles(
         .all()
     )
 
-@router.get("/{booth_id}")
+@router.get("/{booth_name}")
 async def get_hextile(
     request: Request,
-    booth_id: str,
+    booth_name: str,
     session: Session = Depends(get_session),
     user: User = Depends(get_user),
 ):
     booth = (
         session.query(UserBooths)
+        .join(Booth)
         .options(joinedload(UserBooths.booth))
-        .filter(UserBooths.user_id == user.user_id, UserBooths.booth_id == booth_id)
+        .filter(UserBooths.user_id == user.user_id, Booth.name == booth_name)
         .first()
-    )
-
-    msg = (
-        session.query(Msg)
-        .options(joinedload(Msg.owner))
-        .filter(Msg.booth_id == booth_id)
-        .all()
     )
 
     if not booth:
         raise HTTPException(status_code=404, detail="Booth not found")
+
+
+    msg = (
+        session.query(Msg)
+        .options(joinedload(Msg.owner))
+        .filter(Msg.booth_id == booth.booth_id)
+        .all()
+    )
 
     return {
         "booth": booth.booth,
