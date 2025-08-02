@@ -28,7 +28,7 @@ def get_user(request: Request, session: Session = Depends(get_session)) -> User:
         response = response.json()
 
         user = User(user_id=token, name=response["user_id"], points=0)
-        achievement = UserAchievement(user_id=token, achievement_id=1)
+        achievement = UserAchievement(user_id=token, achievement_id=0)
 
         session.add(user)
         session.add(achievement)
