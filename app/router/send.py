@@ -60,6 +60,6 @@ async def collect_point(
     session.add(user_booth)
     session.commit()
 
-    background_tasks.add_task(check_achievement, user.user_id)
+    background_tasks.add_task(check_achievement, user.user_id, None)
 
     return {"message": "Send successfully"}

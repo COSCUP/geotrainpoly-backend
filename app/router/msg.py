@@ -45,6 +45,6 @@ async def create_msg(
     session.execute(update_stmt)
     session.commit()
 
-    background_tasks.add_task(check_achievement, user.user_id)
+    background_tasks.add_task(check_achievement, user.user_id, None)
 
     return {"message": "success"}
