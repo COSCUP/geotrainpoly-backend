@@ -2,6 +2,7 @@ from fastapi import Depends, BackgroundTasks
 from fastapi.routing import APIRouter
 from sqlalchemy.dialects.mysql import insert
 from sqlalchemy.orm import Session
+from sqlalchemy import func
 from app.database import get_session
 from app.models.booths import Booth
 from app.models.users import User
@@ -34,8 +35,12 @@ async def create_msg(
         user_id=user.user_id,
         booth_id=body.booth_id,
         content=body.content,
+        created_at=func.now()
     )
-    update_stmt = stmt.on_duplicate_key_update(content=stmt.inserted.content)
+    update_stmt = stmt.on_duplicate_key_update(
+        content=stmt.inserted.content,
+        created_at=stmt.inserted.created_at
+    )
 
     session.execute(update_stmt)
     session.commit()
