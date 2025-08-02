@@ -7,8 +7,10 @@ class Achievement(Base):
     __tablename__ = "achievements"
     achievement_id = Column(Integer, autoincrement=True, primary_key=True)
     name = Column(Text)
-    title = Column(Text)
     points = Column(Integer)
-    user_id = Column(String(40), ForeignKey("users.user_id"))
+    
+    model = Column(String(30))
+    goal = Column(Integer, server_default="0")
+    type = Column(String(30))
 
-    owner = relationship("User", back_populates="achievements")
+    user_achievements = relationship("UserAchievement", back_populates="achievement")

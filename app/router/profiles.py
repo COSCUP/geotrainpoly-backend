@@ -1,9 +1,9 @@
 from fastapi import Depends, Request, HTTPException
 from fastapi.routing import APIRouter
 from pydantic import BaseModel
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from app.database import get_session
-from app.models.achievements import Achievement
+from app.models.userAchievement import UserAchievement
 from app.models.users import User
 from app.middleware.getUser import get_user
 
@@ -22,11 +22,17 @@ async def get_profiles(
     user: User = Depends(get_user),
 ):
     achievements = (
-        session.query(Achievement).filter(Achievement.user_id == user.user_id).all()
+        session
+        .query(UserAchievement).filter(UserAchievement.user_id == user.user_id)
+        .options(joinedload(UserAchievement.achievement))
+        .all()
     )
 
     user_dict = user.__dict__
-    user_dict["achievements"] = achievements
+    user_dict["achievements"] = [
+        i.achievement.__dict__
+        for i in achievements
+    ]
 
     return user_dict
 
@@ -43,10 +49,13 @@ async def update_title(
     user: User = Depends(get_user),
 ):
     achievements = (
-        session.query(Achievement).filter(Achievement.user_id == user.user_id).all()
+        session
+        .query(UserAchievement).filter(UserAchievement.user_id == user.user_id)
+        .options(joinedload(UserAchievement.achievement))
+        .all()
     )
 
-    if payload.title not in [achievement.title for achievement in achievements]:
+    if payload.title not in [i.achievement.name for i in achievements]:
         raise HTTPException(status_code=403, detail="You don't have this title")
 
     user.title = payload.title
