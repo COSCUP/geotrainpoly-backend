@@ -1,4 +1,4 @@
-from fastapi import Depends, HTTPException, Request
+from fastapi import Depends, HTTPException, Request, BackgroundTasks
 from fastapi.routing import APIRouter
 from sqlalchemy.orm import Session
 from app.database import get_session
@@ -8,6 +8,7 @@ from app.models.userBooths import UserBooths
 from pydantic import BaseModel
 from app.middleware.getUser import get_user
 from typing import Literal
+from app.background import check_achievement
 
 
 class CollectRequest(BaseModel):
@@ -26,6 +27,7 @@ router = APIRouter(
 async def collect_point(
     request: Request,
     body: CollectRequest,
+    background_tasks: BackgroundTasks,
     session: Session = Depends(get_session),
     user: User = Depends(get_user),
 ):
@@ -60,5 +62,7 @@ async def collect_point(
 
     session.add(user_booth)
     session.commit()
+
+    background_tasks.add_task(check_achievement, user_id)
 
     return {"message": "Point collected successfully"}

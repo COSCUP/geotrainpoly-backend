@@ -10,7 +10,8 @@ class Achievement(Base):
     points = Column(Integer)
     
     model = Column(String(30))
-    goal = Column(Integer, server_default="0")
+    column = Column(String(30))
+    goal = Column(String(40), server_default="0")
     type = Column(String(30))
 
     user_achievements = relationship("UserAchievement", back_populates="achievement")
