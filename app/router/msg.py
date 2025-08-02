@@ -8,7 +8,7 @@ from app.models.users import User
 from app.models.msg import Msg
 from app.middleware.getUser import get_user
 from pydantic import BaseModel
-from app.background import check_achievement
+from app.background.check_achievement import check_achievement
 
 
 router = APIRouter(

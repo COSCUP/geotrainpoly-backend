@@ -8,7 +8,7 @@ from app.models.userBooths import UserBooths
 from pydantic import BaseModel
 from app.middleware.getUser import get_user
 from typing import Literal
-from app.background import check_achievement
+from app.background.check_achievement import check_achievement
 
 
 class CollectRequest(BaseModel):
