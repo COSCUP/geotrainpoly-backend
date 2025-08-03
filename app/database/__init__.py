@@ -8,7 +8,7 @@ from sqlalchemy.ext.declarative import declarative_base
 load_dotenv()
 install_as_MySQLdb()
 
-engine = create_engine(getenv("DATABASE_URL"))
+engine = create_engine(getenv("DATABASE_URL"), isolation_level="SERIALIZABLE")
 SessionLocal = sessionmaker(bind=engine, autocommit=False, autoflush=False)
 Base = declarative_base()
 
