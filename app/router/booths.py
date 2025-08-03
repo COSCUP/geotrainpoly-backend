@@ -23,3 +23,13 @@ async def get_booths(session: Session = Depends(get_session)):
         }
         for booth in booths
     ]
+
+@router.get("/{booth_id}")
+async def get_booth(booth_id: str, session: Session = Depends(get_session)):
+    booth = session.query(Booth).filter(Booth.booth_id == booth_id).first()
+    return {
+        "name": booth.name,
+        "type": booth.type,
+        "logo": booth.logo,
+        "description": booth.description,
+    }
