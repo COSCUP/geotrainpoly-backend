@@ -5,6 +5,13 @@ from app.models.achievements import Achievement
 from app.models.userAchievement import UserAchievement
 from app.models.msg import Msg
 from app.models.users import User
+from app.models.userBooths import UserBooths
+
+
+def deep_getattr(obj, attr):
+    for a in attr.split('.'):
+        obj = getattr(obj, a)
+    return obj
 
 
 def check_achievement(user_id: str, relation = None):
@@ -27,7 +34,7 @@ def check_achievement(user_id: str, relation = None):
             .filter(User.user_id == user_id)
             .options(joinedload(User.msg))
             .options(joinedload(User.achievements))
-            .options(joinedload(User.booths))
+            .options(joinedload(User.booths).joinedload(UserBooths.booth))
             .first()
         )
 
@@ -39,7 +46,7 @@ def check_achievement(user_id: str, relation = None):
                     db.add(UserAchievement(user_id=user_id, achievement_id=achievement.achievement_id))
                     user.points += achievement.points
             elif achievement.type == 'HAS':
-                if achievement.goal in [getattr(m, achievement.column) for m in models]:
+                if achievement.goal in [deep_getattr(m, achievement.column) for m in models]:
                     db.add(UserAchievement(user_id=user_id, achievement_id=achievement.achievement_id))
                     user.points += achievement.points
 
