@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, Text, Enum, String
+from sqlalchemy import Column, Integer, Text, Enum, String, Boolean
 from sqlalchemy.orm import relationship
 from app.database import engine, Base
 from app.models.userAchievement import UserAchievement
@@ -8,7 +8,7 @@ class User(Base):
     __tablename__ = "users"
     user_id = Column(String(40), primary_key=True)
     name = Column(Text)
-    avatar = Column(Text)
+    reward = Column(Boolean, server_default="0")
     title = Column(Text)
     points = Column(Integer, server_default="0")
 
