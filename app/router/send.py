@@ -44,13 +44,7 @@ async def collect_point(
     if user_booth:
         raise HTTPException(status_code=400, detail="Point already collected")
 
-    point_to_add = 0
-    if booth.type == "BOOTHS":
-        point_to_add = 50
-    elif booth.type == "ROOMS":
-        point_to_add = 10
-
-    user.points += point_to_add
+    user.points += 5
 
     user_booth = UserBooths(
         user_id=body.user_id,
