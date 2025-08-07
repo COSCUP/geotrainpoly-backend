@@ -36,6 +36,7 @@ async def get_hextiles(
         for i in session.query(UserBooths)
         .options(joinedload(UserBooths.booth))
         .filter(UserBooths.user_id == user.user_id)
+        .order_by(UserBooths.id)
         .all()
     )
 
