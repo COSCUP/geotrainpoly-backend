@@ -33,8 +33,15 @@ async def collect_point(
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 
+    resp = {
+        "name": user.name,
+        "points": user.points,
+        "reward": user.reward
+    }
+
     user.reward = True
     session.commit()
 
-    return user
+
+    return resp
 
