@@ -39,6 +39,10 @@ def check_achievement(user_id: str, relation = None):
         )
 
         for achievement in missing_achievements:
+
+            if not achievement.model:
+                continue;
+
             models = getattr(user, achievement.model)
 
             if achievement.type == 'LG':
