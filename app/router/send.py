@@ -56,4 +56,5 @@ async def collect_point(
 
     background_tasks.add_task(check_achievement, user.user_id, None)
 
-    return {"message": "Send successfully", payload: user}
+    return {"detail": f"Send to {user.name} successfully"}
+
