@@ -10,6 +10,7 @@ class Booth(Base):
     description = Column(Text)
     logo = Column(Text)
     type = Column(Enum("BOOTHS", "ROOMS"))
+    points = Column(Integer, server_default="0")
 
     users = relationship("UserBooths", back_populates="booth")
     msg = relationship("Msg", back_populates="booth")
