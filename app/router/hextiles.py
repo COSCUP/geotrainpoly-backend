@@ -40,7 +40,7 @@ async def get_hextiles(
         .all()
     )
 
-@router.get("/{booth_name}")
+@router.get("/{booth_name:path}")
 async def get_hextile(
     request: Request,
     booth_name: str,
