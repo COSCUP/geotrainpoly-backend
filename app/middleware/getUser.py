@@ -12,6 +12,11 @@ def get_user(request: Request, session: Session = Depends(get_session)) -> User:
     if not authorization:
         raise HTTPException(status_code=403, detail="Token Invalid")
 
+    authorization = authorization.split("Bearer ")
+
+    if len(authorization) != 2:
+        raise HTTPException(status_code=403, detail="Token Invalid")
+
     term, token = authorization.split(" ")
 
     if term != "Bearer":
