@@ -5,8 +5,10 @@ from app.database import get_session
 from app.models.booths import Booth
 from app.models.users import User
 from app.models.userBooths import UserBooths
+from app.models.userAchievement import UserAchievement
 from pydantic import BaseModel
 from app.background.check_achievement import check_achievement
+from httpx import get
 
 
 class SendRequest(BaseModel):
@@ -31,7 +33,20 @@ async def collect_point(
         raise HTTPException(status_code=404, detail="Booth not found")
 
     if not user:
-        raise HTTPException(status_code=404, detail="User not found")
+        response = get(f"https://ccip.opass.app/status?token={body.user_id}")
+
+        if response.status_code != 200:
+            raise HTTPException(status_code=404, detail="User not found")
+
+        response = response.json()
+
+        user = User(user_id=body.user_id, name=response["user_id"], points=0)
+        achievement = UserAchievement(user_id=body.user_id, achievement_id=2025)
+
+        session.add(user)
+        session.add(achievement)
+        session.commit()
+
 
     user_booth = (
         session.query(UserBooths)
