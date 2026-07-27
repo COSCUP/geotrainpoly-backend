@@ -3,7 +3,6 @@ from sqlalchemy import select
 from app.database import get_session
 from app.models.achievements import Achievement
 from app.models.userAchievement import UserAchievement
-from app.models.msg import Msg
 from app.models.users import User
 from app.models.userBooths import UserBooths
 
@@ -41,7 +40,7 @@ def check_achievement(user_id: str, relation = None):
         for achievement in missing_achievements:
 
             if not achievement.model:
-                continue;
+                continue
 
             models = getattr(user, achievement.model)
 

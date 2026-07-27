@@ -1,7 +1,6 @@
-from sqlalchemy import Column, Integer, Text, Enum, String, ForeignKey
+from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
-from app.database import engine, Base
-from app.models.achievements import Achievement
+from app.database import Base
 
 
 class UserAchievement(Base):

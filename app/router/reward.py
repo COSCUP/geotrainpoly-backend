@@ -1,12 +1,9 @@
-from fastapi import Depends, HTTPException, Request, BackgroundTasks
+from fastapi import Depends, HTTPException, Request
 from fastapi.routing import APIRouter
 from sqlalchemy.orm import Session
 from app.database import get_session
-from app.models.booths import Booth
 from app.models.users import User
-from app.models.userBooths import UserBooths
 from pydantic import BaseModel
-from app.background.check_achievement import check_achievement
 
 class RewardRequest(BaseModel):
     user_id: str

@@ -4,7 +4,6 @@ from sqlalchemy.dialects.mysql import insert
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 from app.database import get_session
-from app.models.booths import Booth
 from app.models.users import User
 from app.models.msg import Msg
 from app.middleware.getUser import get_user
