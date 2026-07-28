@@ -30,7 +30,7 @@ def _fetch():
 
     sessions = data.get("sessions", [])
     for session in sessions:
-        session["room_name"] = room_id_to_name.get(session["room"])
+        session["room_name"] = room_id_to_name.get(session.get("room"))
 
     _sessions = sessions
     _last_fetched = datetime.utcnow()
