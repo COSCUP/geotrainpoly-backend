@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta, timezone
+from threading import Thread
 from httpx import get
 
 TZ_TAIPEI = timezone(timedelta(hours=8))
@@ -6,28 +7,49 @@ TZ_TAIPEI = timezone(timedelta(hours=8))
 OPASS_URL = "https://coscup.org/2026/api/opass.json"
 CACHE_TTL = timedelta(minutes=5)
 
-_cache: list = []
+_sessions: list = []
+_data_hash: str | None = None
 _last_fetched: datetime | None = None
 
 
 def _fetch():
-    global _cache, _last_fetched
+    global _sessions, _last_fetched, _data_hash
+
     response = get(OPASS_URL, timeout=10)
     response.raise_for_status()
-    _cache = response.json().get("sessions", [])
+
+    data_hash = hash(response.text)
+
+    if _data_hash == data_hash:
+        _last_fetched = datetime.utcnow()
+        return
+
+    data = response.json()
+
+    room_id_to_name = {room["id"]: room["en"]["name"] for room in data.get("rooms", [])}
+
+    sessions = data.get("sessions", [])
+    for session in sessions:
+        session["room_name"] = room_id_to_name.get(session["room"])
+
+    _sessions = sessions
     _last_fetched = datetime.utcnow()
+    _data_hash = data_hash
 
 
-def get_sessions() -> list:
-    if _last_fetched is None or datetime.utcnow() - _last_fetched > CACHE_TTL:
+def _ensure_fresh():
+    if _last_fetched is None:
         _fetch()
-    return _cache
+    elif datetime.utcnow() - _last_fetched > CACHE_TTL:
+        Thread(target=_fetch, daemon=True).start()
 
 
-def get_current_session_id(room: str) -> str | None:
+def get_current_session_id(room_name: str) -> str | None:
+    _ensure_fresh()
+
     now = datetime.now(TZ_TAIPEI)
-    for session in get_sessions():
-        if str(session.get("room")) != str(room):
+    for session in _sessions:
+        if session.get("room_name") != room_name:
             continue
         try:
             start = datetime.fromisoformat(session["start"])
