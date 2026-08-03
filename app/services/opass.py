@@ -59,7 +59,7 @@ def get_current_session_id(room_name: str) -> str | None:
             if end.tzinfo is None:
                 end = end.replace(tzinfo=TZ_TAIPEI)
             if start <= now <= end:
-                return session["id"]
+                return session
         except (KeyError, ValueError):
             continue
     return None
