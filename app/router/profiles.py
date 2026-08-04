@@ -24,5 +24,5 @@ async def get_profiles(
 
     return {
         **user.__dict__,
-        "coffee": ("REWARDED" if coffee.reward else "UN_REWARDS") if coffee else "NO_COFFEE",
+        "coffee": {"win": coffee.win, "reward": coffee.reward} if coffee else None,
     }
