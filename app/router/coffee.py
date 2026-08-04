@@ -58,7 +58,7 @@ async def post_coffee(
         raise HTTPException(status_code=403, detail="Not allowed")
 
     if coffee.win is not None:
-        raise HTTPException(status_code=400, detail="Already drawn")
+        return coffee
 
     count = session.query(Coffee).filter(Coffee.win == True).count()
     win = count < 70 and random.random() < 0.5
