@@ -3,6 +3,7 @@ from fastapi.routing import APIRouter
 from sqlalchemy.orm import Session
 from app.database import get_session
 from app.models.users import User
+from app.models.coffee import Coffee
 from app.middleware.getUser import get_user
 
 
@@ -19,4 +20,9 @@ async def get_profiles(
     session: Session = Depends(get_session),
     user: User = Depends(get_user),
 ):
-    return user.__dict__
+    coffee = session.query(Coffee).filter(Coffee.user_id == user.user_id).first()
+
+    return {
+        **user.__dict__,
+        "coffee": ("REWARDED" if coffee.reward else "UN_REWARDS") if coffee else "NO_COFFEE",
+    }

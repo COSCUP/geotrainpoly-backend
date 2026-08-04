@@ -13,3 +13,4 @@ class User(Base):
 
     booths = relationship("UserBooths", back_populates="owner")
     msg = relationship("Msg", back_populates="owner")
+    coffee = relationship("Coffee", back_populates="owner")
