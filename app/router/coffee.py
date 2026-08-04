@@ -33,7 +33,7 @@ async def get_coffee(
     coffee = session.query(Coffee).filter(Coffee.user_id == user.user_id).first()
 
     if not coffee:
-        coffee = Coffee(user_id=user.user_id, win=False)
+        coffee = Coffee(user_id=user.user_id)
         session.add(coffee)
         session.commit()
 
@@ -56,6 +56,9 @@ async def post_coffee(
 
     if not coffee:
         raise HTTPException(status_code=403, detail="Not allowed")
+
+    if coffee.win is not None:
+        raise HTTPException(status_code=400, detail="Already drawn")
 
     count = session.query(Coffee).filter(Coffee.win == True).count()
     win = count < 70 and random.random() < 0.5
