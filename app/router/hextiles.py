@@ -5,7 +5,6 @@ from app.database import get_session
 from app.models.userBooths import UserBooths
 from app.models.booths import Booth
 from app.models.users import User
-from app.models.msg import Msg
 from app.middleware.getUser import get_user
 from app.services.opass import get_current_session_id
 
