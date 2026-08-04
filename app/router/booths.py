@@ -40,6 +40,6 @@ async def get_booth(booth_id: str, session: Session = Depends(get_session)):
     }
 
     if booth.type == "ROOMS":
-        resp["session_id"] = get_current_session_id(booth.name)
+        resp["session"] = get_current_session_id(booth.name)
 
     return resp
