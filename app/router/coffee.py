@@ -33,6 +33,7 @@ async def get_coffee(
             "reward": coffee.reward,
         }
 
+    count = session.query(Coffee).filter(Coffee.win == True).count()
 
     if not coffee:
         if datetime.now(tz=TZ_TAIPEI) < START:
