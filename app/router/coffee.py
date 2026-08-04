@@ -18,6 +18,11 @@ router = APIRouter(
     dependencies=[Depends(get_user)],
 )
 
+AD = """\
+This Grafana & Friends meetup group hosts events focused on open source monitoring and observability using Grafana and related technologies. Some meetups feature formal presentations, while others are more relaxed and discussion-driven. Every event is designed to encourage learning, connection, and community. Snacks and stickers included!
+https://www.meetup.com/grafana-friends-taipei/?src=event&camp=coscup-2026
+"""
+
 
 @router.get("")
 async def get_coffee(
@@ -27,29 +32,35 @@ async def get_coffee(
 ):
     coffee = session.query(Coffee).filter(Coffee.user_id == user.user_id).first()
 
-    if coffee:
-        return {
-            "win": coffee.win,
-            "reward": coffee.reward,
-        }
-
-    count = session.query(Coffee).filter(Coffee.win == True).count()
-
     if not coffee:
-        if datetime.now(tz=TZ_TAIPEI) < START:
-            raise HTTPException(status_code=403, detail="Lottery not started yet")
-
-        if datetime.now(tz=TZ_TAIPEI) > DEADLINE:
-            raise HTTPException(status_code=403, detail="Lottery end")
-
-        win = count < 70 and random.random() < 0.5
-
-        coffee = Coffee(user_id=user.user_id, win=win)
+        coffee = Coffee(user_id=user.user_id, win=False)
         session.add(coffee)
         session.commit()
 
-        return """
-            This Grafana & Friends meetup group hosts events focused on open source monitoring and observability using Grafana and related technologies. Some meetups feature formal presentations, while others are more relaxed and discussion-driven. Every event is designed to encourage learning, connection, and community. Snacks and stickers included!
+    return AD
 
-            https://www.meetup.com/grafana-friends-taipei/?src=event&camp=coscup-2026
-        """
+
+@router.post("")
+async def post_coffee(
+    request: Request,
+    session: Session = Depends(get_session),
+    user: User = Depends(get_user),
+):
+    if datetime.now(tz=TZ_TAIPEI) < START:
+        raise HTTPException(status_code=403, detail="Lottery not started yet")
+
+    if datetime.now(tz=TZ_TAIPEI) > DEADLINE:
+        raise HTTPException(status_code=403, detail="Lottery end")
+
+    coffee = session.query(Coffee).filter(Coffee.user_id == user.user_id).first()
+
+    if not coffee:
+        raise HTTPException(status_code=403, detail="Not allowed")
+
+    count = session.query(Coffee).filter(Coffee.win == True).count()
+    win = count < 70 and random.random() < 0.5
+
+    coffee.win = win
+    session.commit()
+
+    return {"win": coffee.win, "reward": coffee.reward}
