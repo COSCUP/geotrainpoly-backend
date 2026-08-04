@@ -11,6 +11,5 @@ class User(Base):
     title = Column(Text)
     points = Column(Integer, server_default="0")
 
-    achievements = relationship("UserAchievement", back_populates="owner")
     booths = relationship("UserBooths", back_populates="owner")
     msg = relationship("Msg", back_populates="owner")

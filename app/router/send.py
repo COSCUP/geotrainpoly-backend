@@ -1,13 +1,11 @@
-from fastapi import Depends, HTTPException, Request, BackgroundTasks
+from fastapi import Depends, HTTPException, Request
 from fastapi.routing import APIRouter
 from sqlalchemy.orm import Session
 from app.database import get_session
 from app.models.booths import Booth
 from app.models.users import User
 from app.models.userBooths import UserBooths
-from app.models.userAchievement import UserAchievement
 from pydantic import BaseModel
-from app.background.check_achievement import check_achievement
 from httpx import get
 
 
@@ -24,7 +22,7 @@ router = APIRouter(
 
 @router.post("")
 async def collect_point(
-    request: Request, body: SendRequest, background_tasks: BackgroundTasks, session: Session = Depends(get_session)
+    request: Request, body: SendRequest, session: Session = Depends(get_session)
 ):
     user = session.query(User).filter(User.user_id == body.user_id).first()
     booth = session.query(Booth).filter(Booth.booth_id == body.booth_id).first()
@@ -41,12 +39,9 @@ async def collect_point(
         response = response.json()
 
         user = User(user_id=body.user_id, name=response["user_id"], points=0)
-        achievement = UserAchievement(user_id=body.user_id, achievement_id=2025)
 
         session.add(user)
-        session.add(achievement)
         session.commit()
-
 
     user_booth = (
         session.query(UserBooths)
@@ -69,7 +64,4 @@ async def collect_point(
     session.add(user_booth)
     session.commit()
 
-    background_tasks.add_task(check_achievement, user.user_id, None)
-
     return {"detail": f"Send to {user.name} successfully"}
-
