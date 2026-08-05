@@ -38,7 +38,7 @@ async def collect_point(
 
         response = response.json()
 
-        user = User(user_id=body.user_id, name=response["user_id"], points=0)
+        user = User(user_id=body.user_id, name=response["user_id"], points=5)
 
         session.add(user)
         session.commit()

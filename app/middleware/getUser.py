@@ -31,7 +31,7 @@ def get_user(request: Request, session: Session = Depends(get_session)) -> User:
 
         response = response.json()
 
-        user = User(user_id=token, name=response["user_id"], points=0)
+        user = User(user_id=token, name=response["user_id"], points=5)
 
         session.add(user)
         session.commit()
