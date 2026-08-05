@@ -67,3 +67,28 @@ async def post_coffee(
     session.commit()
 
     return {"win": coffee.win, "reward": coffee.reward}
+
+@router.put("")
+async def reward_coffee(
+    request: Request,
+    session: Session = Depends(get_session),
+    user: User = Depends(get_user),
+):
+    if datetime.now(tz=TZ_TAIPEI) < START:
+        raise HTTPException(status_code=403, detail="Lottery not started yet")
+
+    if datetime.now(tz=TZ_TAIPEI) > DEADLINE:
+        raise HTTPException(status_code=403, detail="Lottery end")
+
+    coffee = session.query(Coffee).filter(Coffee.user_id == user.user_id).first()
+
+    if not coffee:
+        raise HTTPException(status_code=403, detail="Not allowed")
+
+    if coffee.win == False:
+        raise HTTPException(status_code=403, detail="Not win")
+    
+    coffee.reward = True
+    session.commit()
+
+    return {"win": coffee.win, "reward": coffee.reward}
