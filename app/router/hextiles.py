@@ -51,7 +51,7 @@ async def get_hextile(
         session.query(UserBooths)
         .join(Booth)
         .options(joinedload(UserBooths.booth))
-        .filter(UserBooths.user_id == user.user_id, Booth.name == booth_name)
+        .filter(UserBooths.user_id == user.user_id, Booth.name == booth_name or Booth.booth_id == booth_name)
         .first()
     )
 
