@@ -16,7 +16,7 @@ router = APIRouter(
 )
 
 
-@router.get("")
+@router.post("")
 async def get_points(
     request: Request, body: RewardRequest, session: Session = Depends(get_session)
 ):
