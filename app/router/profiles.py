@@ -1,10 +1,9 @@
-from fastapi import Depends, Request, HTTPException
+from fastapi import Depends, Request
 from fastapi.routing import APIRouter
-from pydantic import BaseModel
-from sqlalchemy.orm import Session, joinedload
+from sqlalchemy.orm import Session
 from app.database import get_session
-from app.models.userAchievement import UserAchievement
 from app.models.users import User
+from app.models.coffee import Coffee
 from app.middleware.getUser import get_user
 
 
@@ -21,44 +20,9 @@ async def get_profiles(
     session: Session = Depends(get_session),
     user: User = Depends(get_user),
 ):
-    achievements = (
-        session
-        .query(UserAchievement).filter(UserAchievement.user_id == user.user_id)
-        .options(joinedload(UserAchievement.achievement))
-        .all()
-    )
+    coffee = session.query(Coffee).filter(Coffee.user_id == user.user_id).first()
 
-    user_dict = user.__dict__
-    user_dict["achievements"] = [
-        i.achievement.__dict__
-        for i in achievements
-    ]
-
-    return user_dict
-
-
-class UpdateTitlePayload(BaseModel):
-    title: str
-
-
-@router.put("")
-async def update_title(
-    request: Request,
-    payload: UpdateTitlePayload,
-    session: Session = Depends(get_session),
-    user: User = Depends(get_user),
-):
-    achievements = (
-        session
-        .query(UserAchievement).filter(UserAchievement.user_id == user.user_id)
-        .options(joinedload(UserAchievement.achievement))
-        .all()
-    )
-
-    if payload.title not in [i.achievement.name for i in achievements]:
-        raise HTTPException(status_code=403, detail="You don't have this title")
-
-    user.title = payload.title
-    session.commit()
-
-    return user.__dict__
+    return {
+        **user.__dict__,
+        "coffee": {"win": coffee.win, "reward": coffee.reward} if coffee else None,
+    }

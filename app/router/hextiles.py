@@ -5,8 +5,8 @@ from app.database import get_session
 from app.models.userBooths import UserBooths
 from app.models.booths import Booth
 from app.models.users import User
-from app.models.msg import Msg
 from app.middleware.getUser import get_user
+from app.services.opass import get_current_session_id
 
 
 router = APIRouter(
@@ -51,30 +51,18 @@ async def get_hextile(
         session.query(UserBooths)
         .join(Booth)
         .options(joinedload(UserBooths.booth))
-        .filter(UserBooths.user_id == user.user_id, Booth.name == booth_name)
+        .filter(UserBooths.user_id == user.user_id, Booth.name == booth_name or Booth.booth_id == booth_name)
         .first()
     )
 
     if not booth:
         raise HTTPException(status_code=404, detail="Booth not found")
 
-
-    msg = (
-        session.query(Msg)
-        .options(joinedload(Msg.owner))
-        .filter(Msg.booth_id == booth.booth_id)
-        .all()
-    )
-
-    return {
+    resp = {
         "booth": booth.booth,
-        "msg": [
-            {
-                "msg_id": x.id,
-                "user": {"name": x.owner.name, "title": x.owner.title},
-                "content": x.content,
-                "created_at": x.created_at,
-            }
-            for x in msg
-        ],
     }
+
+    if booth.booth.type == "ROOMS":
+        resp["session"] = get_current_session_id(booth.booth.name)
+
+    return resp

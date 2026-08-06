@@ -2,7 +2,6 @@ from fastapi import Depends, Request, HTTPException
 from sqlalchemy.orm import Session
 from app.database import get_session
 from app.models.users import User
-from app.models.userAchievement import UserAchievement
 from httpx import get
 
 
@@ -32,11 +31,9 @@ def get_user(request: Request, session: Session = Depends(get_session)) -> User:
 
         response = response.json()
 
-        user = User(user_id=token, name=response["user_id"], points=0)
-        achievement = UserAchievement(user_id=token, achievement_id=2025)
+        user = User(user_id=token, name=response["user_id"], points=5)
 
         session.add(user)
-        session.add(achievement)
         session.commit()
 
         return user
