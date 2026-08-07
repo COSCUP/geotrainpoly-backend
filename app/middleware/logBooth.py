@@ -70,7 +70,8 @@ class LogBoothMiddleware(BaseHTTPMiddleware):
         try:
             db.add(Log(user_id=user_id, booth_id=booth_id, action=action))
             db.commit()
-        except Exception:
+        except Exception as ex:
+            print(ex)
             db.rollback()
         finally:
             db.close()
