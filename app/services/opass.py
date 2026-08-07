@@ -32,7 +32,7 @@ def _fetch():
     sessions = data.get("sessions", [])
     for session in sessions:
         session["room_name"] = room_id_to_name.get(session.get("room"))
-        session["speakers"] = [speaker_map[sid] for sid in session.get("speakers", []) if sid in speaker_map]
+        session["speakers"] = [speaker_map[sid]["en"]["name"] for sid in session.get("speakers", []) if sid in speaker_map]
 
     _sessions = sessions
     _last_fetched = datetime.utcnow()
