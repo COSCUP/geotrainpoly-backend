@@ -50,6 +50,9 @@ def get_current_session_id(room_name: str) -> str | None:
     _ensure_fresh()
 
     now = datetime.now(TZ_TAIPEI)
+    next_session = None
+    next_start = None
+
     for session in _sessions:
         if session.get("room_name") != room_name:
             continue
@@ -62,6 +65,9 @@ def get_current_session_id(room_name: str) -> str | None:
                 end = end.replace(tzinfo=TZ_TAIPEI)
             if start <= now <= end:
                 return session
+            if start > now and (next_start is None or start < next_start):
+                next_start = start
+                next_session = session
         except (KeyError, ValueError):
             continue
-    return None
+    return next_session
