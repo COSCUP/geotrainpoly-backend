@@ -27,10 +27,12 @@ def _fetch():
     data = response.json()
 
     room_id_to_name = {room["id"]: room["en"]["name"] for room in data.get("rooms", [])}
+    speaker_map = {s["id"]: s for s in data.get("speakers", [])}
 
     sessions = data.get("sessions", [])
     for session in sessions:
         session["room_name"] = room_id_to_name.get(session.get("room"))
+        session["speakers"] = [speaker_map[sid] for sid in session.get("speakers", []) if sid in speaker_map]
 
     _sessions = sessions
     _last_fetched = datetime.utcnow()
