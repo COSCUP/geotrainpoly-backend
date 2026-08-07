@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.routing import APIRouter
 from fastapi.middleware.cors import CORSMiddleware
+from app.middleware.logBooth import LogBoothMiddleware
 from app.router import (
     booths_router,
     profiles_router,
@@ -21,6 +22,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+app.add_middleware(LogBoothMiddleware)
 
 api = APIRouter(prefix="/api")
 api.include_router(booths_router)
