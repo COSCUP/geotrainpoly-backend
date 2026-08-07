@@ -7,6 +7,14 @@ TZ_TAIPEI = timezone(timedelta(hours=8))
 OPASS_URL = "https://coscup.org/2026/api/opass.json"
 CACHE_TTL = timedelta(minutes=5)
 
+LANGUAGE_MAP = {
+    "中国語": "Mandarin",
+    "中文": "Mandarin",
+    "英語": "English",
+    "英文": "English",
+    "其他": "Other",
+}
+
 _sessions: list = []
 _data_hash: str | None = None
 _last_fetched: datetime | None = None
@@ -33,6 +41,7 @@ def _fetch():
     for session in sessions:
         session["room_name"] = room_id_to_name.get(session.get("room"))
         session["speakers"] = [speaker_map[sid]["en"]["name"] for sid in session.get("speakers", []) if sid in speaker_map]
+        session["language"] = LANGUAGE_MAP.get(session.get("language"), session.get("language"))
 
     _sessions = sessions
     _last_fetched = datetime.utcnow()
