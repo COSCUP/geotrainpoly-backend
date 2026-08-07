@@ -9,4 +9,4 @@ class Log(Base):
     timestamp = Column(TIMESTAMP(timezone=True), server_default=func.now())
     user_id = Column(String(40))
     booth_id = Column(String(40))
-    action = Column(String(40))
+    action = Column(String(255))
