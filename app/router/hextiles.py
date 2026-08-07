@@ -7,7 +7,7 @@ from app.models.booths import Booth
 from app.models.users import User
 from app.middleware.getUser import get_user
 from app.services.opass import get_current_session_id
-
+from sqlalchemy import or_
 
 router = APIRouter(
     prefix="/hextiles",
@@ -51,7 +51,7 @@ async def get_hextile(
         session.query(UserBooths)
         .join(Booth)
         .options(joinedload(UserBooths.booth))
-        .filter(UserBooths.user_id == user.user_id, Booth.name == booth_name or Booth.booth_id == booth_name)
+        .filter(UserBooths.user_id == user.user_id, or_(Booth.name == booth_name, Booth.booth_id == booth_name))
         .first()
     )
 
