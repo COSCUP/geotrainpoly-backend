@@ -61,7 +61,12 @@ async def post_coffee(
         return coffee
 
     count = session.query(Coffee).filter(Coffee.win == True).count()
-    win = count < 70 and random.random() < 0.5
+
+
+    if count >= 35:
+        raise HTTPException(status_code=406, detail="Today is full")
+
+    win = count < 35 and random.random() < 0.5
 
     coffee.win = win
     session.commit()
